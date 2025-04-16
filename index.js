@@ -10,14 +10,14 @@ const openai = new OpenAI({
 
 // Folders
 const docsDir = path.join(__dirname, "resumes");
-const goodDir = path.join(__dirname, "good");
-const badDir = path.join(__dirname, "bad");
+const yesDir = path.join(__dirname, "yes");
+const noDir = path.join(__dirname, "no");
 
 // Prompt files
 const requirementsFile = path.join(__dirname, "requirements.txt");
 const promptStructureFile = path.join(__dirname, "promptStructure.txt");
 
-// Merge requirements into prompt
+// Merge requirements into the prompt
 const requirements = fs.readFileSync(requirementsFile, "utf8");
 const promptStructure = fs.readFileSync(promptStructureFile, "utf8");
 const systemPrompt = promptStructure.replace(
@@ -26,8 +26,8 @@ const systemPrompt = promptStructure.replace(
 );
 
 // Ensure output folders exist
-if (!fs.existsSync(goodDir)) fs.mkdirSync(goodDir);
-if (!fs.existsSync(badDir)) fs.mkdirSync(badDir);
+if (!fs.existsSync(yesDir)) fs.mkdirSync(yesDir);
+if (!fs.existsSync(noDir)) fs.mkdirSync(noDir);
 
 // Reads a file (txt, docx, pdf) and returns plain text
 async function readFileAsText(filePath) {
@@ -52,7 +52,7 @@ async function readFileAsText(filePath) {
 
   for (const file of files) {
     const filePath = path.join(docsDir, file);
-    const { name, ext } = path.parse(file); // name=filename, ext=original extension
+    const { name, ext } = path.parse(file);
 
     let textContent;
     try {
@@ -62,7 +62,7 @@ async function readFileAsText(filePath) {
       continue;
     }
 
-    // Ask ChatGPT for (rating, decision, reason)
+    // Ask GPT for rating, decision, reason
     const response = await openai.chat.completions.create({
       model: "gpt-4o", // or "gpt-3.5-turbo"
       messages: [
@@ -75,33 +75,34 @@ async function readFileAsText(filePath) {
     const fullAnswer = response.choices[0].message.content.trim();
     const lines = fullAnswer.split(/\r?\n/).map((line) => line.trim());
 
-    // lines[0] = rating, lines[1] = ALL_MET/NOT_MET, lines[2] = reason
-    const rating = lines[0] || "";
-    const decision = lines[1] || "";
+    // Expect:
+    // lines[0] = rating (1-10)
+    // lines[1] = "ALL_MET" or "NOT_MET"
+    // lines[2] = reason
+    const rating = lines[0] || "0";
+    const decision = lines[1] || "NOT_MET";
     const reason = lines[2] || "No reason provided.";
 
-    // Move file based on decision
+    // If the mandatory requirements are all met, ChatGPT should say "ALL_MET".
     if (decision === "ALL_MET") {
-      // 1) Move the original resume to "good"
-      fs.renameSync(filePath, path.join(goodDir, file));
+      // Move file to "yes" folder
+      fs.renameSync(filePath, path.join(yesDir, file));
 
-      // 2) Create a .txt file with the same base name plus _rating before .txt
-      //    e.g. "JohnDoe_9.txt"
-      const reasonFileName = `${name}_${rating}.txt`;
-      const reasonFilePath = path.join(goodDir, reasonFileName);
+      // Create a separate .txt file with rating appended (e.g., name_rating.txt)
+      const ratingFileName = `${name}_${rating}.txt`;
+      const ratingFilePath = path.join(yesDir, ratingFileName);
+      const ratingFileContent = `Rating: ${rating}\nReason: ${reason}`;
 
-      // 3) Write reason + rating to this file
-      const reasonFileContent = `Rating: ${rating}\nReason: ${reason}`;
-      fs.writeFileSync(reasonFilePath, reasonFileContent, "utf8");
+      fs.writeFileSync(ratingFilePath, ratingFileContent, "utf8");
     } else {
-      // For NOT_MET, move file to "bad"
-      fs.renameSync(filePath, path.join(badDir, file));
+      // Move file to "no" folder
+      fs.renameSync(filePath, path.join(noDir, file));
 
-      // Optionally create a separate text file for rejections
-      // (in case you still want the reason for rejection)
+      // Create a .txt file with reason for rejection
       const rejectFileName = `${name}.txt`;
-      const rejectFilePath = path.join(badDir, rejectFileName);
-      const rejectFileContent = `Reason: ${reason}\nRating: ${rating}`;
+      const rejectFilePath = path.join(noDir, rejectFileName);
+      const rejectFileContent = `Rating: ${rating}\nReason: ${reason}`;
+
       fs.writeFileSync(rejectFilePath, rejectFileContent, "utf8");
     }
   }
