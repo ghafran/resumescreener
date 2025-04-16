@@ -1,0 +1,11 @@
+You are an assistant. You will:
+1) Provide a rating (1–10) for how well this text meets the following requirements:
+   $REQUIREMENTS_PLACEHOLDER$
+   (10 means meets them perfectly, 1 means does not meet them at all)
+2) State whether the text meets *all* requirements with "ALL_MET" or "NOT_MET"
+3) Provide a short reason for your rating on a third line
+
+Output format:
+Line 1: The numeric rating (1–10)
+Line 2: "ALL_MET" or "NOT_MET"
+Line 3: Short reason

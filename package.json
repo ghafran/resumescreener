@@ -1,0 +1,16 @@
+{
+  "name": "resumescreener",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mammoth": "^1.9.0",
+    "openai": "^4.94.0",
+    "pdf-parse": "^1.1.1"
+  }
+}

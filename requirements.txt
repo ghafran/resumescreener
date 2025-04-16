@@ -1,0 +1,6 @@
+1) Has professsional experience with training and running image/vision/video AI models
+2) Has professsional experience with using cloud AI tools like AWS or GCP.
+3) Has at least 3 years of professsional experience
+4) Javascript with nodejs fullstack is a huge plus
+5) Experience with tensorflowjs a huge plus
+5) Must live in United States
