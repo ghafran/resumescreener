@@ -86,7 +86,8 @@ async function readFileAsText(filePath) {
     // If the mandatory requirements are all met, ChatGPT should say "ALL_MET".
     if (decision === "ALL_MET") {
       // Move file to "yes" folder
-      fs.renameSync(filePath, path.join(yesDir, file));
+      const newFileName = `${rating}_${file}`;
+      fs.renameSync(filePath, path.join(yesDir, newFileName));
 
       // Create a separate .txt file with rating appended (e.g., name_rating.txt)
       const ratingFileName = `${rating}_${name}.txt`;
