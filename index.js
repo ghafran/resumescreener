@@ -89,7 +89,7 @@ async function readFileAsText(filePath) {
       fs.renameSync(filePath, path.join(yesDir, file));
 
       // Create a separate .txt file with rating appended (e.g., name_rating.txt)
-      const ratingFileName = `${name}_${rating}.txt`;
+      const ratingFileName = `${rating}_${name}.txt`;
       const ratingFilePath = path.join(yesDir, ratingFileName);
       const ratingFileContent = `Rating: ${rating}\nReason: ${reason}`;
 
