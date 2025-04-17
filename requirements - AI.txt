@@ -1,0 +1,11 @@
+MANDATORY REQUIREMENTS:
+1) Minimum 3 years of professional experience developing, training, and deploying image vision AI models.
+2) Professional experience deploying image AI solutions using cloud platforms such as AWS or GCP.
+3) Strong problem-solving skills and ability to independently research and implement new AI methodologies.
+
+PLUS REQUIREMENTS (do not reject if missing; only increase rating if present):
+1) Experience with TensorFlow.js (not required).
+2) Full-stack JavaScript (Node.js) (not required).
+3) Must reside in the United States (do not reject if location is not explicitly mentioned).
+4) Familiarity with CI/CD pipelines and AI model optimization techniques.
+5) Experience in healthcare space.
